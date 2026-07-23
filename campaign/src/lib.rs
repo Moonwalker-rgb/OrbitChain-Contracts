@@ -166,8 +166,8 @@ impl CampaignContract {
             &creator,
             goal_amount,
             end_time,
-            accepted_assets.len() as u32,
-            milestone_count as u32,
+            accepted_assets.len(),
+            milestone_count,
             env.ledger().sequence(),
         );
 
