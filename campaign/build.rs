@@ -113,7 +113,7 @@ fn type_to_string(ty: &syn::Type) -> String {
                             syn::GenericArgument::Const(expr) => {
                                 s.push_str(&expr_to_string(expr));
                             }
-                            _ => s.push_str("_"),
+                            _ => s.push('_'),
                         }
                     }
                     s.push('>');
@@ -318,7 +318,7 @@ fn extract_events(source: &str) -> Vec<EventDef> {
                         name: field_name,
                         type_: json_type.to_string(),
                         description: field_desc,
-                        soroban_type: soroban_type.map(String::from),
+                        soroban_type,
                     });
                 }
             }

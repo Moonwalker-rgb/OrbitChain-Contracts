@@ -23,7 +23,12 @@
       "data_format": "map",
       "description": "Emitted when the campaign transitions to the Ended state (deadline passed or concluded normally).",
       "fields": [
-        { "name": "timestamp", "type": "string", "description": "Ledger timestamp when the campaign concluded.", "sorobanType": "u64" }
+        {
+          "name": "timestamp",
+          "type": "string",
+          "description": "Ledger timestamp when the campaign concluded.",
+          "sorobanType": "u64"
+        }
       ]
     },
     {
