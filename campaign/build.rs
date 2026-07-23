@@ -36,7 +36,7 @@ struct EventSchema {
     events: Vec<EventDef>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(Clone, serde::Serialize)]
 struct EventDef {
     /// Lower-snake-case event name (the on-chain topic).
     name: String,
@@ -51,7 +51,7 @@ struct EventDef {
     fields: Vec<FieldDef>,
 }
 
-#[derive(serde::Serialize)]
+#[derive(Clone, serde::Serialize)]
 struct FieldDef {
     /// Field name as it appears in the Rust struct.
     name: String,
