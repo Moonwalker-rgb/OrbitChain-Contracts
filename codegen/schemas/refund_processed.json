@@ -2,31 +2,31 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://schemas.orbitchain.org/events/refund_processed.json",
   "title": "OrbitChain Event: refund_processed",
-  "description": "Emitted when a refund is processed for a donor.",
+  "description": "Event emitted by the OrbitChain campaign contract. Topic: `refund_processed`",
   "type": "object",
   "required": [
-    "donor",
     "amount",
     "asset",
+    "donor",
     "ledger"
   ],
   "properties": {
-    "donor": {
-      "type": "string",
-      "description": "Donor's Stellar address (G...)"
-    },
     "amount": {
       "type": "string",
-      "description": "Refund amount in base units, encoded as a decimal string",
+      "description": "128-bit signed integer, encoded as a decimal string",
       "format": "int128"
     },
     "asset": {
       "type": "string",
-      "description": "Asset selector: \"Native\" for XLM, or a Stellar token contract address"
+      "description": "Asset selector: \"Native\" or Stellar contract address"
+    },
+    "donor": {
+      "type": "string",
+      "description": "Stellar address (G...)"
     },
     "ledger": {
       "type": "integer",
-      "description": "Ledger number at which the refund was processed",
+      "description": "32-bit unsigned integer",
       "format": "uint32",
       "minimum": 0
     }
