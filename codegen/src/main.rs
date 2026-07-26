@@ -133,15 +133,15 @@ fn parse_struct_header(line: &str) -> Option<String> {
 
 fn parse_struct_body(lines: &[&str], start_idx: usize) -> Result<Vec<Field>> {
     let mut fields = Vec::new();
-    let mut depth = 0u32;
-    let mut started = false;
+    // The opening `{` is on the struct header line (already consumed by the
+    // caller), so we start with depth=1 and already inside the body.
+    let mut depth = 1u32;
 
     for line in lines.iter().skip(start_idx) {
         let trimmed = line.trim();
 
-        // Track brace nesting
+        // Track brace nesting: nested structs / blocks may open/close braces
         if trimmed.contains('{') {
-            started = true;
             depth += trimmed.matches('{').count() as u32;
         }
         if trimmed.contains('}') {
@@ -150,10 +150,6 @@ fn parse_struct_body(lines: &[&str], start_idx: usize) -> Result<Vec<Field>> {
                 break;
             }
             depth -= close_count;
-        }
-
-        if !started {
-            continue;
         }
 
         // Skip empty lines, comments, and doc comments
