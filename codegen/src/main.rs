@@ -137,8 +137,12 @@ fn parse_struct_body(lines: &[&str], start_idx: usize) -> Result<Vec<Field>> {
     // caller), so we start with depth=1 and already inside the body.
     let mut depth = 1u32;
 
-    for line in lines.iter().skip(start_idx) {
+    eprintln!("DEBUG parse_struct_body: start_idx={}, total_lines={}", start_idx, lines.len());
+
+    for (line_num, line) in lines.iter().skip(start_idx).enumerate() {
+        let actual_line = start_idx + line_num;
         let trimmed = line.trim();
+        eprintln!("DEBUG line {}: depth={} trimmed='{}'", actual_line, depth, trimmed);
 
         // Track brace nesting: nested structs / blocks may open/close braces
         if trimmed.contains('{') {
@@ -147,6 +151,7 @@ fn parse_struct_body(lines: &[&str], start_idx: usize) -> Result<Vec<Field>> {
         if trimmed.contains('}') {
             let close_count = trimmed.matches('}').count() as u32;
             if close_count >= depth {
+                eprintln!("DEBUG line {}: closing brace, breaking (close={} depth={})", actual_line, close_count, depth);
                 break;
             }
             depth -= close_count;
@@ -158,15 +163,20 @@ fn parse_struct_body(lines: &[&str], start_idx: usize) -> Result<Vec<Field>> {
             || trimmed.starts_with("///")
             || trimmed.starts_with("#[")
         {
+            eprintln!("DEBUG line {}: skipped (empty/comment/attr)", actual_line);
             continue;
         }
 
         // Parse field: `pub field_name: Type,`
         if let Some(field) = parse_field(trimmed) {
+            eprintln!("DEBUG line {}: parsed field {}: {}", actual_line, field.name, field.rust_type);
             fields.push(field);
+        } else {
+            eprintln!("DEBUG line {}: NOT a field", actual_line);
         }
     }
 
+    eprintln!("DEBUG parse_struct_body: returning {} fields", fields.len());
     Ok(fields)
 }
 
