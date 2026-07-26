@@ -94,11 +94,12 @@ fn parse_event_structs(source: &str) -> Result<Vec<EventStruct>> {
                     if struct_name.contains("Event") || struct_name.ends_with("Event") {
                         // Parse struct body
                         let fields = parse_struct_body(&lines, j + 1)?;
+                        let field_count = fields.len();
                         events.push(EventStruct {
                             name: struct_name,
                             fields,
                         });
-                        i = j + fields.len() + 3; // skip past struct body
+                        i = j + field_count + 3; // skip past struct body
                         continue;
                     }
                 }
