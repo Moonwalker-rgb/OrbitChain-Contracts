@@ -5,12 +5,12 @@
   "description": "Event emitted by the OrbitChain campaign contract. Topic: `campaign_initialized`",
   "type": "object",
   "required": [
-    "asset_count",
-    "created_at_ledger",
     "creator",
-    "end_time",
     "goal_amount",
-    "milestone_count"
+    "end_time",
+    "asset_count",
+    "milestone_count",
+    "created_at_ledger"
   ],
   "properties": {
     "asset_count": {

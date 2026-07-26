@@ -5,9 +5,9 @@
   "description": "Event emitted by the OrbitChain campaign contract. Topic: `refund_processed`",
   "type": "object",
   "required": [
+    "donor",
     "amount",
     "asset",
-    "donor",
     "ledger"
   ],
   "properties": {

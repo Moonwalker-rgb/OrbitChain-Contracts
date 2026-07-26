@@ -6,8 +6,8 @@
   "type": "object",
   "required": [
     "from",
-    "ledger",
-    "to"
+    "to",
+    "ledger"
   ],
   "properties": {
     "from": {

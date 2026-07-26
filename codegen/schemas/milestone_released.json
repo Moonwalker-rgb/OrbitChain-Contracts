@@ -5,9 +5,9 @@
   "description": "Event emitted by the OrbitChain campaign contract. Topic: `milestone_released`",
   "type": "object",
   "required": [
+    "milestone_index",
     "amount",
     "asset_code",
-    "milestone_index",
     "recipient",
     "timestamp"
   ],
