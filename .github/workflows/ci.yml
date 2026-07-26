@@ -175,16 +175,8 @@ jobs:
         uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: true
-      - name: Regenerate event schemas and check for drift
-        run: |
-          cargo run -p orbitchain-codegen -- --src campaign/src/types.rs --out codegen/schemas/
-          if ! git diff --exit-code -- codegen/schemas/; then
-            echo ""
-            echo "ERROR: Event schemas are out of date. The diff above shows what changed."
-            echo "Run 'cargo run -p orbitchain-codegen' locally and commit the regenerated schemas."
-            exit 1
-          fi
-          echo "Event schemas are up-to-date."
+      - name: Check event schemas are up-to-date
+        run: cargo run -p orbitchain-codegen -- --src campaign/src/types.rs --out codegen/schemas/ --check
 
   # ── crates/tools (native CLI) — issue #122 ─────────────────────────────────
   # The CLI is a major part of the user-facing surface and was previously
