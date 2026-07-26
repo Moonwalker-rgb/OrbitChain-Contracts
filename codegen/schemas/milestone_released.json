@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.orbitchain.org/events/milestone_released.json",
+  "title": "OrbitChain Event: milestone_released",
+  "description": "Emitted after each successful token transfer during milestone release. When a multi-asset release transfers tokens from multiple assets, a separate event is emitted per asset. Topics: [\"milestone_released\", contract_address]",
+  "type": "object",
+  "required": [
+    "milestone_index",
+    "amount",
+    "asset_code",
+    "recipient",
+    "timestamp"
+  ],
+  "properties": {
+    "milestone_index": {
+      "type": "integer",
+      "description": "Zero-based milestone index",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "amount": {
+      "type": "string",
+      "description": "Amount transferred in this asset's base units, encoded as a decimal string",
+      "format": "int128"
+    },
+    "asset_code": {
+      "type": "string",
+      "description": "Asset code (e.g. \"XLM\", \"USDC\")"
+    },
+    "recipient": {
+      "type": "string",
+      "description": "Address that received the funds (G...)"
+    },
+    "timestamp": {
+      "type": "integer",
+      "description": "Ledger timestamp of the release (UNIX seconds)",
+      "format": "uint64",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

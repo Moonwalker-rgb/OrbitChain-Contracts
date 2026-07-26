@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.orbitchain.org/events/donation_received.json",
+  "title": "OrbitChain Event: donation_received",
+  "description": "Emitted after every successful donation, once storage has been updated. Topics: [\"donation_received\", contract_address]",
+  "type": "object",
+  "required": [
+    "donor",
+    "amount",
+    "asset",
+    "new_total_raised",
+    "ledger"
+  ],
+  "properties": {
+    "donor": {
+      "type": "string",
+      "description": "Donor's Stellar address (G...)"
+    },
+    "amount": {
+      "type": "string",
+      "description": "Donated amount in base units, encoded as a decimal string",
+      "format": "int128"
+    },
+    "asset": {
+      "type": "string",
+      "description": "Asset selector: \"Native\" for XLM, or a Stellar token contract address"
+    },
+    "new_total_raised": {
+      "type": "string",
+      "description": "Cumulative raised amount after this donation, encoded as a decimal string",
+      "format": "int128"
+    },
+    "ledger": {
+      "type": "integer",
+      "description": "Ledger number at which the donation was processed",
+      "format": "uint32",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

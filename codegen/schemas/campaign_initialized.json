@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.orbitchain.org/events/campaign_initialized.json",
+  "title": "OrbitChain Event: campaign_initialized",
+  "description": "Emitted once when the campaign contract is successfully initialized. Topics: [\"campaign\", \"initialized\"]",
+  "type": "object",
+  "required": [
+    "creator",
+    "goal_amount",
+    "end_time",
+    "asset_count",
+    "milestone_count",
+    "created_at_ledger"
+  ],
+  "properties": {
+    "creator": {
+      "type": "string",
+      "description": "Campaign creator's Stellar address (G...)"
+    },
+    "goal_amount": {
+      "type": "string",
+      "description": "Total funding target in base units, encoded as a decimal string",
+      "format": "int128"
+    },
+    "end_time": {
+      "type": "integer",
+      "description": "UNIX timestamp (seconds) after which donations are rejected",
+      "format": "uint64",
+      "minimum": 0
+    },
+    "asset_count": {
+      "type": "integer",
+      "description": "Number of accepted assets",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "milestone_count": {
+      "type": "integer",
+      "description": "Number of milestones registered",
+      "format": "uint32",
+      "minimum": 0
+    },
+    "created_at_ledger": {
+      "type": "integer",
+      "description": "Ledger number at which the campaign was initialized",
+      "format": "uint32",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}
