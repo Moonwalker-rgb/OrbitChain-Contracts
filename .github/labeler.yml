@@ -13,6 +13,7 @@
 # Rust Soroban contracts — the canonical on-chain API surface.
 api:
   - "campaign/**"
+  - "codegen/**"
   - "common/**"
   - "token-bridge/**"
   - "crates/contracts/core/**"

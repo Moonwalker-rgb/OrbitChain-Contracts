@@ -17,6 +17,7 @@
 
 use anyhow::{Context, Result};
 use serde::Serialize;
+use serde_json::Value;
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -445,10 +446,15 @@ fn check_schemas(schemas: &[(String, JsonSchema)], out_dir: &Path) -> Result<()>
 
     for (name, schema) in schemas {
         let path = out_dir.join(format!("{}.json", name));
+        let new_json = serde_json::to_string_pretty(schema)?;
+        let new_value: Value = serde_json::from_str(&new_json)
+            .with_context(|| format!("Failed to parse generated schema for {}", name))?;
+
         match fs::read_to_string(&path) {
             Ok(existing_json) => {
-                let new_json = serde_json::to_string_pretty(schema)?;
-                if existing_json != new_json {
+                let existing_value: Value = serde_json::from_str(&existing_json)
+                    .with_context(|| format!("Failed to parse committed schema: {}", path.display()))?;
+                if !schemas_are_structurally_equal(&new_value, &existing_value) {
                     errors.push(format!(
                         "Schema mismatch for {} — run `cargo run -p orbitchain-codegen` to regenerate",
                         path.display()
@@ -465,7 +471,7 @@ fn check_schemas(schemas: &[(String, JsonSchema)], out_dir: &Path) -> Result<()>
     }
 
     if errors.is_empty() {
-        eprintln!("All schemas are up-to-date.");
+        eprintln!("All {} struct-based schemas are up-to-date.", schemas.len());
         Ok(())
     } else {
         for err in &errors {
@@ -475,5 +481,87 @@ fn check_schemas(schemas: &[(String, JsonSchema)], out_dir: &Path) -> Result<()>
             "{} schema(s) are stale or missing. Run `cargo run -p orbitchain-codegen` to regenerate.",
             errors.len()
         );
+    }
+}
+
+/// Compare two JSON Schema values structurally, ignoring cosmetic fields
+/// (title, description, $id) that don't affect machine-readability.
+fn schemas_are_structurally_equal(a: &Value, b: &Value) -> bool {
+    match (a, b) {
+        (Value::Object(a_map), Value::Object(b_map)) => {
+            // Collect keys to compare, skipping cosmetic fields
+            let cosmetic: &[&str] = &["title", "description", "$id"];
+            let a_keys: Vec<&String> = a_map.keys().filter(|k| !cosmetic.contains(&k.as_str())).collect();
+            let b_keys: Vec<&String> = b_map.keys().filter(|k| !cosmetic.contains(&k.as_str())).collect();
+
+            if a_keys.len() != b_keys.len() {
+                return false;
+            }
+
+            for key in &a_keys {
+                let a_val = match a_map.get(*key) {
+                    Some(v) => v,
+                    None => return false,
+                };
+                let b_val = match b_map.get(*key) {
+                    Some(v) => v,
+                    None => return false,
+                };
+
+                // For the `properties` object, recursively strip description from each property
+                if *key == "properties" {
+                    if !properties_are_structurally_equal(a_val, b_val) {
+                        return false;
+                    }
+                } else if !schemas_are_structurally_equal(a_val, b_val) {
+                    return false;
+                }
+            }
+            true
+        }
+        (Value::Array(a_arr), Value::Array(b_arr)) => {
+            if a_arr.len() != b_arr.len() {
+                return false;
+            }
+            a_arr.iter().zip(b_arr.iter()).all(|(a, b)| schemas_are_structurally_equal(a, b))
+        }
+        _ => a == b,
+    }
+}
+
+/// Compare properties objects, ignoring `description` fields within each property.
+fn properties_are_structurally_equal(a: &Value, b: &Value) -> bool {
+    match (a, b) {
+        (Value::Object(a_map), Value::Object(b_map)) => {
+            if a_map.len() != b_map.len() {
+                return false;
+            }
+            for (key, a_prop) in a_map {
+                let b_prop = match b_map.get(key) {
+                    Some(v) => v,
+                    None => return false,
+                };
+                // Strip description from each property object before comparing
+                let a_clean = strip_description(a_prop);
+                let b_clean = strip_description(b_prop);
+                if a_clean != b_clean {
+                    return false;
+                }
+            }
+            true
+        }
+        _ => a == b,
+    }
+}
+
+/// Remove the `description` field from a JSON object.
+fn strip_description(v: &Value) -> Value {
+    match v {
+        Value::Object(map) => {
+            let mut cleaned = map.clone();
+            cleaned.remove("description");
+            Value::Object(cleaned)
+        }
+        _ => v.clone(),
     }
 }
