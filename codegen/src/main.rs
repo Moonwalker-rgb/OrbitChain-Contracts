@@ -347,7 +347,7 @@ fn generate_schema(event: &EventStruct) -> JsonSchema {
     let mut properties = BTreeMap::new();
 
     for field in &event.fields {
-        let mut prop = map_type(&field.rust_type);
+        let prop = map_type(&field.rust_type);
         // Fields are required unless they're Option<T>
         if !field.rust_type.starts_with("Option<") {
             required.push(field.name.clone());
@@ -456,6 +456,12 @@ fn check_schemas(schemas: &[(String, JsonSchema)], out_dir: &Path) -> Result<()>
                 let existing_value: Value = serde_json::from_str(&existing_json)
                     .with_context(|| format!("Failed to parse committed schema: {}", path.display()))?;
                 if !schemas_are_structurally_equal(&new_value, &existing_value) {
+                    // Write regenerated schema to a temp file for diff inspection
+                    let tmp_path = out_dir.join(format!("{}.generated.json", name));
+                    fs::write(&tmp_path, &new_json).ok();
+                    eprintln!("\n--- Mismatch for {} ---", name);
+                    eprintln!("Generated schema written to: {}", tmp_path.display());
+                    eprintln!("Run: diff {} {}", tmp_path.display(), path.display());
                     errors.push(format!(
                         "Schema mismatch for {} — run `cargo run -p orbitchain-codegen` to regenerate",
                         path.display()
