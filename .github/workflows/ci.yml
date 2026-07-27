@@ -97,6 +97,8 @@ jobs:
         with:
           cache-on-failure: true
       - name: cargo test (contracts)
+        env:
+          RUSTFLAGS: "-D warnings"
         run: cargo test ${{ env.CONTRACTS }}
 
   wasm-check:
@@ -251,4 +253,6 @@ jobs:
           cache-on-failure: true
       # Acceptance criterion (#122): a PR that fails this blocks merge.
       - name: cargo test (tools)
+        env:
+          RUSTFLAGS: "-D warnings"
         run: cargo test ${{ env.TOOLS }}
