@@ -5,11 +5,12 @@
 # `documentation`, `storage`, `testing`, or `security` applied based on
 # which file globs the PR touches.
 #
-# `pull_request_target` is the official recipe for labeler workflows
-# because the action needs `pull-requests: write` to apply labels, and
-# that permission is only available in the base branch's context.
-# The action itself is read-only against repository code; it does not
-# evaluate `run:` from PRs.
+# NOTE: temporarily using `pull_request` (instead of `pull_request_target`)
+# so that CI reads the labeler config from this branch during the initial
+# v5 migration. Once this PR is merged, revert to `pull_request_target`
+# (which is the correct event for production — it has `pull-requests: write`
+# in the base-branch context and the action itself is read-only against code).
+# See: https://github.com/actions/labeler#updating-major-version-of-the-labeler
 
 name: Pull Request Labeler
 
@@ -18,7 +19,7 @@ permissions:
   pull-requests: write
 
 on:
-  - pull_request_target
+  - pull_request
 
 jobs:
   labeler:
