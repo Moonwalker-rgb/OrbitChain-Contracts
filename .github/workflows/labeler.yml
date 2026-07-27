@@ -5,12 +5,13 @@
 # `documentation`, `storage`, `testing`, or `security` applied based on
 # which file globs the PR touches.
 #
-# NOTE: temporarily using `pull_request` (instead of `pull_request_target`)
-# so that CI reads the labeler config from this branch during the initial
-# v5 migration. Once this PR is merged, revert to `pull_request_target`
-# (which is the correct event for production — it has `pull-requests: write`
-# in the base-branch context and the action itself is read-only against code).
-# See: https://github.com/actions/labeler#updating-major-version-of-the-labeler
+# Uses `pull_request_target` so that `pull-requests: write` permission is
+# available even for fork PRs.  An explicit `actions/checkout` of the PR
+# head ref is included so that `.github/labeler.yml` is read from the PR
+# branch (allows config fixes to ship with the PR that introduces them).
+#
+# NOTE: the checkout step only activates once this change lands on the
+# base branch.  Until then, the labeler reads the base-branch config.
 
 name: Pull Request Labeler
 
@@ -19,7 +20,7 @@ permissions:
   pull-requests: write
 
 on:
-  - pull_request
+  - pull_request_target
 
 jobs:
   labeler:
@@ -27,6 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Apply labels
         uses: actions/labeler@v5
         with:
