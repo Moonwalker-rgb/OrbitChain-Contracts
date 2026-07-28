@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/OrbitChainLabs/OrbitChain-Contracts/blob/main/codegen/schemas/milestone_released.json",
+  "title": "milestone_released",
+  "description": "Emitted after each successful token transfer during milestone release. One event per asset.",
+  "type": "object",
+  "properties": {
+    "topics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Event topics: [\"milestone_released\", contract_address]"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "milestone_index": { "type": "integer", "description": "Zero-based milestone index (u32)", "minimum": 0 },
+        "amount": { "type": "string", "description": "Amount transferred in this asset's base units (i128)" },
+        "asset_code": { "type": "string", "description": "Asset code, e.g. XLM or USDC (String)" },
+        "recipient": { "type": "string", "description": "Address that received the funds (Address)" },
+        "timestamp": { "type": "string", "description": "Ledger timestamp of the release (u64)" }
+      },
+      "required": ["milestone_index", "amount", "asset_code", "recipient", "timestamp"]
+    }
+  },
+  "required": ["topics", "data"]
+}

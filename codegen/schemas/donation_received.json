@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/OrbitChainLabs/OrbitChain-Contracts/blob/main/codegen/schemas/donation_received.json",
+  "title": "donation_received",
+  "description": "Emitted after every successful donation, once storage has been updated.",
+  "type": "object",
+  "properties": {
+    "topics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Event topics: [\"donation_received\", contract_address]"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "donor": { "type": "string", "description": "Donor's Stellar address (Address)" },
+        "amount": { "type": "string", "description": "Donated amount in base units (i128)" },
+        "asset_code": { "type": "string", "description": "Asset code, e.g. XLM or USDC (String)" },
+        "raised_total": { "type": "string", "description": "Cumulative raised amount after this donation (i128)" },
+        "timestamp": { "type": "string", "description": "Ledger timestamp of the donation (u64)" }
+      },
+      "required": ["donor", "amount", "asset_code", "raised_total", "timestamp"]
+    }
+  },
+  "required": ["topics", "data"]
+}

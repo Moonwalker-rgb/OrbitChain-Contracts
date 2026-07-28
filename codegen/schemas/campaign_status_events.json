@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/OrbitChainLabs/OrbitChain-Contracts/blob/main/codegen/schemas/campaign_status_events.json",
+  "title": "Campaign Lifecycle Events",
+  "description": "Combined schema for campaign lifecycle events: campaign_ended, campaign_cancelled, deadline_extended, contract_upgraded, contract_frozen, contract_unfrozen, asset_blocked, asset_unblocked.",
+  "type": "object",
+  "oneOf": [
+    {
+      "title": "campaign_ended",
+      "description": "Emitted when the campaign ends (deadline passed or ended early).",
+      "properties": {
+        "event": { "const": "campaign_ended" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"campaign_ended\"]" },
+        "data": { "type": "null" }
+      }
+    },
+    {
+      "title": "campaign_cancelled",
+      "description": "Emitted when the campaign is cancelled by the creator.",
+      "properties": {
+        "event": { "const": "campaign_cancelled" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"campaign_cancelled\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "creator": { "type": "string", "description": "Creator's Stellar address (Address)" }
+          },
+          "required": ["creator"]
+        }
+      }
+    },
+    {
+      "title": "deadline_extended",
+      "description": "Emitted when the campaign deadline is extended by the creator.",
+      "properties": {
+        "event": { "const": "deadline_extended" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"deadline_extended\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "creator": { "type": "string" },
+            "old_deadline": { "type": "string", "description": "Previous deadline timestamp (u64)" },
+            "new_deadline": { "type": "string", "description": "New deadline timestamp (u64)" }
+          },
+          "required": ["creator", "old_deadline", "new_deadline"]
+        }
+      }
+    },
+    {
+      "title": "contract_upgraded",
+      "description": "Emitted when the contract is upgraded by the admin.",
+      "properties": {
+        "event": { "const": "contract_upgraded" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"contract_upgraded\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "admin": { "type": "string" },
+            "new_wasm_hash": { "type": "string", "description": "New WASM hash (BytesN<32>)" },
+            "timestamp": { "type": "string", "description": "Ledger timestamp (u64)" }
+          },
+          "required": ["admin", "new_wasm_hash", "timestamp"]
+        }
+      }
+    },
+    {
+      "title": "contract_frozen",
+      "description": "Emitted when the contract is frozen by the admin.",
+      "properties": {
+        "event": { "const": "contract_frozen" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"contract_frozen\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "admin": { "type": "string" },
+            "timestamp": { "type": "string" }
+          },
+          "required": ["admin", "timestamp"]
+        }
+      }
+    },
+    {
+      "title": "contract_unfrozen",
+      "description": "Emitted when the contract is unfrozen by the admin.",
+      "properties": {
+        "event": { "const": "contract_unfrozen" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"contract_unfrozen\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "admin": { "type": "string" },
+            "timestamp": { "type": "string" }
+          },
+          "required": ["admin", "timestamp"]
+        }
+      }
+    },
+    {
+      "title": "asset_blocked",
+      "description": "Emitted when an asset is blocked by the admin.",
+      "properties": {
+        "event": { "const": "asset_blocked" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"asset_blocked\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "admin": { "type": "string" },
+            "asset": { "type": "string", "description": "Blocked asset address (Address)" },
+            "timestamp": { "type": "string" }
+          },
+          "required": ["admin", "asset", "timestamp"]
+        }
+      }
+    },
+    {
+      "title": "asset_unblocked",
+      "description": "Emitted when an asset is unblocked by the admin.",
+      "properties": {
+        "event": { "const": "asset_unblocked" },
+        "topics": { "type": "array", "items": { "type": "string" }, "description": "[\"campaign\", \"asset_unblocked\"]" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "admin": { "type": "string" },
+            "asset": { "type": "string" },
+            "timestamp": { "type": "string" }
+          },
+          "required": ["admin", "asset", "timestamp"]
+        }
+      }
+    }
+  ]
+}

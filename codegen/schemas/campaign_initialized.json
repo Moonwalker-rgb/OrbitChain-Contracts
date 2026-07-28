@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/OrbitChainLabs/OrbitChain-Contracts/blob/main/codegen/schemas/campaign_initialized.json",
+  "title": "campaign_initialized",
+  "description": "Emitted once when the campaign contract is successfully initialized.",
+  "type": "object",
+  "properties": {
+    "topics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Event topics: [\"campaign\", \"initialized\"]"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "creator": { "type": "string", "description": "Campaign creator's Stellar address (Address)" },
+        "goal_amount": { "type": "string", "description": "Total funding target in base units (i128)" },
+        "end_time": { "type": "string", "description": "UNIX timestamp after which donations are rejected (u64)" },
+        "asset_count": { "type": "integer", "description": "Number of accepted assets (u32)", "minimum": 0 },
+        "milestone_count": { "type": "integer", "description": "Number of milestones registered (u32)", "minimum": 0 }
+      },
+      "required": ["creator", "goal_amount", "end_time", "asset_count", "milestone_count"]
+    }
+  },
+  "required": ["topics", "data"]
+}

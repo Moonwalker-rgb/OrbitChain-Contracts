@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/OrbitChainLabs/OrbitChain-Contracts/blob/main/codegen/schemas/milestone_unlocked.json",
+  "title": "milestone_unlocked",
+  "description": "Emitted once per milestone when its target is first reached.",
+  "type": "object",
+  "properties": {
+    "topics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Event topics: [\"milestone_unlocked\", contract_address]"
+    },
+    "data": {
+      "type": "object",
+      "properties": {
+        "milestone_index": { "type": "integer", "description": "Zero-based milestone index (u32)", "minimum": 0 },
+        "target_amount": { "type": "string", "description": "Funding threshold that triggered the unlock (i128)" },
+        "raised_total": { "type": "string", "description": "Cumulative raised amount at time of unlock (i128)" }
+      },
+      "required": ["milestone_index", "target_amount", "raised_total"]
+    }
+  },
+  "required": ["topics", "data"]
+}
